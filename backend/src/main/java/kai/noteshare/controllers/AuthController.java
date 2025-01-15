@@ -15,13 +15,13 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import kai.noteshare.config.JwtConfigProperties;
 import kai.noteshare.entities.User;
-import kai.noteshare.entities.UserRole;
 import kai.noteshare.security.JwtService;
 import kai.noteshare.services.UserService;
+import kai.noteshare.dto.AuthenticationRequest;
+import kai.noteshare.dto.RegisterRequest;
+import kai.noteshare.dto.AuthenticationResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,12 +53,12 @@ public class AuthController {
     ) {
         authManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                request.username(),
-                request.password()
+                request.getUsername(),
+                request.getPassword()
             )
         );
 
-        UserDetails userDetails = userService.loadUserByUsername(request.username());
+        UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
         String jwt = jwtService.generateToken(userDetails);
 
         Cookie cookie = new Cookie(cookieName, jwt);
@@ -68,8 +68,8 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new AuthenticationResponse(
-            request.username(),
-            userService.getUserRole(request.username())
+            request.getUsername(),
+            userService.getUserRole(request.getUsername())
         ));
     }
 
@@ -78,7 +78,7 @@ public class AuthController {
             @RequestBody @Valid RegisterRequest request,
             HttpServletResponse response
     ) {
-        if (userService.userExists(request.username())) {
+        if (userService.userExists(request.getUsername())) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Username already exists"
@@ -86,8 +86,8 @@ public class AuthController {
         }
 
         User user = userService.createUser(
-            request.username(),
-            passwordEncoder.encode(request.password())
+            request.getUsername(),
+            passwordEncoder.encode(request.getPassword())
         );
 
         UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
@@ -100,7 +100,7 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new AuthenticationResponse(
-            request.username(),
+            request.getUsername(),
             user.getRole()
         ));
     }
@@ -117,18 +117,3 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 }
-
-record AuthenticationRequest(
-    @NotBlank String username,
-    @NotBlank String password
-) {}
-
-record RegisterRequest(
-    @NotBlank String username,
-    @NotBlank @Size(min = 8) String password
-) {}
-
-record AuthenticationResponse(
-    String username,
-    UserRole role
-) {}
