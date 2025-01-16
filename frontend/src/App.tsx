@@ -4,12 +4,12 @@ import { RegisterPage } from './pages/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
 import { useAuthContext } from './hooks/auth/useAuthContext';
 import { useAuthInit } from './hooks/auth/useAuthInit';
-import { HomePage } from './pages/home/HomePage';
+import { HomePage } from './pages/HomePage';
 import { NavBar } from './components/navbar/NavBar';
 
 function AppContent() {
-  const { user } = useAuthContext();
   useAuthInit();
+  const { user } = useAuthContext();
 
   return (
     <div className="min-h-screen bg-gray-100">
