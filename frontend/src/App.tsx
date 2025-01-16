@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
-import { useAuthContext } from './hooks/useAuthContext';
-import { useAuth } from './hooks/useAuth';
+import { useAuthContext } from './hooks/auth/useAuthContext';
+import { useAuth } from './hooks/auth/useAuth';
+import { useAuthInit } from './hooks/auth/useAuthInit';
 
 function AppContent() {
   const { user } = useAuthContext();
   const { logout } = useAuth();
+  useAuthInit();
 
   return (
     <div className="min-h-screen bg-gray-100">

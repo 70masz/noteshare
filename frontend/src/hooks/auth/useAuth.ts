@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { LoginRequest, RegisterRequest } from '../types/auth';
-import * as authService from '../services/authService';
-import { useAuthContext } from '../hooks/useAuthContext';
+import { LoginRequest, RegisterRequest } from '../../types/auth';
+import * as authService from '../../services/authService';
+import { useAuthContext } from './useAuthContext';
 
 export const useAuth = () => {
   const { user, setUser } = useAuthContext();
