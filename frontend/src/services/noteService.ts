@@ -10,3 +10,7 @@ export const getNoteDetails = async (noteId: number): Promise<Note> => {
     const { data } = await api.get<Note>(`/notes/${noteId}`);
     return data;
 };
+
+export const updateNoteContent = async (noteId: number, content: string): Promise<void> => {
+    await api.put(`/notes/${noteId}/content`, { content });
+};
