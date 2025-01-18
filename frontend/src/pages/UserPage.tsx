@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getUserProfile } from "../services/userService";
 import { FolderGrid } from "../components/userpage/FolderGrid";
+import { AddFolderButton } from "../components/userpage/AddFolderButton";
 
 export const UserPage = () => {
     const { username } = useParams();
@@ -24,6 +25,7 @@ export const UserPage = () => {
                     <p>Member since: {new Date(profile.createdAt).toLocaleDateString()}</p>
                     <p>Total notes: {profile.totalNotes}</p>
                 </div>
+            <AddFolderButton username={profile.username}/>
             </div>
 
             <FolderGrid folders={profile.folders} />
