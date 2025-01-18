@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getUserProfile } from "../services/userService";
+import { FolderGrid } from "../components/folder/FolderGrid";
 
 export const UserPage = () => {
     const { username } = useParams();
@@ -25,19 +26,7 @@ export const UserPage = () => {
                 </div>
             </div>
 
-            <div className="bg-white shadow rounded-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Folders</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {profile.folders.map(folder => (
-                        <div key={folder.id} className="border rounded p-4 hover:shadow-md transition">
-                            <h3 className="font-medium">{folder.name}</h3>
-                        </div>
-                    ))}
-                </div>
-                {profile.folders.length === 0 && (
-                    <p className="text-gray-500 text-center">No folders found</p>
-                )}
-            </div>
+            <FolderGrid folders={profile.folders} />
         </div>
     );
 };
