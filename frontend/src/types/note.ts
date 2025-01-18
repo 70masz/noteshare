@@ -3,4 +3,5 @@ export interface Note {
     filePath: string;
     isPrivate: boolean;
     folderId: number;
+    username: string;
 }
