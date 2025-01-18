@@ -6,10 +6,16 @@ import { useAuthContext } from './hooks/auth/useAuthContext';
 import { useAuthInit } from './hooks/auth/useAuthInit';
 import { HomePage } from './pages/HomePage';
 import { NavBar } from './components/navbar/NavBar';
+import { UserPage } from './pages/UserPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function AppContent() {
-  useAuthInit();
+  const loading = useAuthInit();
   const { user } = useAuthContext();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -28,19 +34,27 @@ function AppContent() {
             path="/"
             element={user ? <HomePage /> : <Navigate to="/login" />}
           />
+          <Route
+            path="/user/:username" element={user ? <UserPage /> : <Navigate to="/login" />}
+          />
         </Routes>
       </div>
     </div>
   );
 }
 
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

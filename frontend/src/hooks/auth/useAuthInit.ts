@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../../services/api';
 import { AuthResponse } from '../../types/auth';
 import { useAuthContext } from './useAuthContext';
 
 export function useAuthInit() {
   const { setUser } = useAuthContext();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -13,9 +14,13 @@ export function useAuthInit() {
         setUser({ username: data.username, role: data.role });
       } catch {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     initAuth();
   }, [setUser]);
+
+  return loading;
 }
