@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import kai.noteshare.entities.User;
 import kai.noteshare.entities.UserRole;
 import kai.noteshare.repositories.UserRepository;
 
@@ -21,9 +22,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        kai.noteshare.entities.User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+        User user = getUserByUsername(username);
         return org.springframework.security.core.userdetails.User
             .withUsername(user.getUsername())
             .password(user.getPassword())
@@ -31,12 +30,17 @@ public class UserService implements UserDetailsService {
             .build();
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     public boolean userExists(String username) {
         return userRepository.existsByUsername(username);
     }
 
-    public kai.noteshare.entities.User createUser(String username, String encodedPassword) {
-        kai.noteshare.entities.User user = new kai.noteshare.entities.User();
+    public User createUser(String username, String encodedPassword) {
+        User user = new User();
         user.setUsername(username);
         user.setPassword(encodedPassword);
         user.setRole(UserRole.USER);
@@ -45,8 +49,6 @@ public class UserService implements UserDetailsService {
     }
 
     public UserRole getUserRole(String username) {
-        return userRepository.findByUsername(username)
-            .map(kai.noteshare.entities.User::getRole)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return getUserByUsername(username).getRole();
     }
 }
