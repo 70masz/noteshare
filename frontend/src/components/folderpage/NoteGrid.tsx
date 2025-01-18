@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { NoteGridProps } from "../../types/props/notegridprops";
 import { getFolderNotes } from "../../services/folderService";
+import { Link } from "react-router-dom";
 
 export const NoteGrid = ({ folderId }: NoteGridProps) => {
     const { data: notes, isLoading, error } = useQuery({
@@ -17,7 +18,7 @@ export const NoteGrid = ({ folderId }: NoteGridProps) => {
             <h2 className="text-xl font-semibold mb-4">Notes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {notes.map(note => (
-                    <div key={note.id} className="border rounded p-4 hover:shadow-md transition">
+                    <Link to={`/note/${note.id}`} key={note.id} className="border rounded p-4 hover:shadow-md transition">
                         <div className="flex justify-between items-center mb-2">
                             <span className="font-medium">Note #{note.id}</span>
                             {note.isPrivate && (
@@ -25,7 +26,7 @@ export const NoteGrid = ({ folderId }: NoteGridProps) => {
                             )}
                         </div>
                         <p className="text-sm text-gray-600">By {note.username}</p>
-                    </div>
+                    </Link>
                 ))}
             </div>
             {notes.length === 0 && (

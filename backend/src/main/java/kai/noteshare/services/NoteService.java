@@ -79,7 +79,7 @@ public class NoteService {
         return noteRepository.findByFolderIdAndUserOrIsPrivateFalse(folderId, currentUser);
     }
 
-    private Note getNoteOrThrow(Long noteId) {
+    public Note getNoteOrThrow(Long noteId) {
         return noteRepository.findById(noteId)
             .orElseThrow(() -> new NoteNotFoundException("Note not found"));
     }

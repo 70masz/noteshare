@@ -9,6 +9,7 @@ import { NavBar } from './components/navbar/NavBar';
 import { UserPage } from './pages/UserPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FolderPage } from './pages/FolderPage';
+import { NotePage } from './pages/NotePage';
 
 function AppContent() {
   const loading = useAuthInit();
@@ -40,6 +41,9 @@ function AppContent() {
           />
           <Route
             path="/folder/:id" element={user ? <FolderPage /> : <Navigate to="/login" />}
+          />
+          <Route 
+            path="/note/:id" element={user ? <NotePage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

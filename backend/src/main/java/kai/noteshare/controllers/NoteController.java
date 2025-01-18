@@ -62,6 +62,13 @@ public class NoteController {
         noteService.updateNoteContent(id, request.getContent(), user);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/notes/{id}")
+    public ResponseEntity<NoteResponse> getNote(
+            @PathVariable Long id,
+            Principal principal) {
+        Note note = noteService.getNoteOrThrow(id);
+        return ResponseEntity.ok(toNoteResponse(note));
+    }
 
     @DeleteMapping("/notes/{id}")
     public ResponseEntity<Void> deleteNote(

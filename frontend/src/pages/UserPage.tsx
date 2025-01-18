@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getUserProfile } from "../services/userService";
-import { FolderGrid } from "../components/folder/FolderGrid";
+import { FolderGrid } from "../components/userpage/FolderGrid";
 
 export const UserPage = () => {
     const { username } = useParams();
