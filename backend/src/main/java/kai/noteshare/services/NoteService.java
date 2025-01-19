@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,12 @@ public class NoteService {
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize note storage", e);
         }
+    }
+
+    public List<Note> getLatestPublicNotes() {
+        return noteRepository.findByIsPrivateFalseOrderByIdDesc(
+            PageRequest.of(0, 10)
+        );
     }
 
     public Note createNote(String content, boolean isPrivate, User user, Long folderId) throws IOException {

@@ -34,7 +34,7 @@ function AppContent() {
           />
           <Route
             path="/"
-            element={user ? <HomePage /> : <Navigate to="/login" />}
+            element={<HomePage />}
           />
           <Route
             path="/user/:username" element={user ? <UserPage /> : <Navigate to="/login" />}

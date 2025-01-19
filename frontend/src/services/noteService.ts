@@ -14,3 +14,8 @@ export const getNoteDetails = async (noteId: number): Promise<Note> => {
 export const updateNoteContent = async (noteId: number, content: string): Promise<void> => {
     await api.put(`/notes/${noteId}/content`, { content });
 };
+
+export const getLatestPublicNotes = async (): Promise<Note[]> => {
+    const { data } = await api.get<Note[]>('/notes/public/latest');
+    return data;
+};

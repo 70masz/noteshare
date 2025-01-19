@@ -35,6 +35,13 @@ public class NoteController {
         this.userService = userService;
     }
 
+    @GetMapping("/notes/public/latest")
+    public ResponseEntity<List<NoteResponse>> getLatestPublicNotes() {
+        return ResponseEntity.ok(noteService.getLatestPublicNotes().stream()
+            .map(this::toNoteResponse)
+            .collect(Collectors.toList()));
+    }
+
     @PostMapping("/notes")
     public ResponseEntity<NoteResponse> createNote(
             @Valid @RequestBody CreateNoteRequest request,
