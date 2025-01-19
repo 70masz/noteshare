@@ -1,11 +1,13 @@
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useState, FormEvent } from "react";
-import { getComments, createComment } from "../../services/commentService";
+import { getComments, createComment, deleteComment } from "../../services/commentService";
 import { CommentsProps } from "../../types/props/commentsprops";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../hooks/auth/useAuthContext";
 
 export const Comments = ({ noteId }: CommentsProps) => {
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState("");
+    const { user } = useAuthContext();
     const queryClient = useQueryClient();
 
     const { data: comments, isLoading } = useQuery({
@@ -13,7 +15,7 @@ export const Comments = ({ noteId }: CommentsProps) => {
         queryFn: () => getComments(noteId)
     });
 
-    const mutation = useMutation({
+    const createMutation = useMutation({
         mutationFn: async () => {
             await createComment(noteId, { content });
         },
@@ -23,9 +25,24 @@ export const Comments = ({ noteId }: CommentsProps) => {
         }
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: async (commentId: number) => {
+            await deleteComment(noteId, commentId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['comments', noteId] });
+        }
+    });
+
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        mutation.mutate();
+        createMutation.mutate();
+    };
+
+    const handleDelete = (commentId: number) => {
+        if (confirm('Are you sure you want to delete this comment?')) {
+            deleteMutation.mutate(commentId);
+        }
     };
 
     if (isLoading) return <div>Loading comments...</div>;
@@ -44,19 +61,29 @@ export const Comments = ({ noteId }: CommentsProps) => {
                 />
                 <button
                     type="submit"
-                    disabled={mutation.isPending || !content.trim()}
+                    disabled={createMutation.isPending || !content.trim()}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                    {mutation.isPending ? 'Posting...' : 'Post Comment'}
+                    {createMutation.isPending ? 'Posting...' : 'Post Comment'}
                 </button>
             </form>
 
             <div className="space-y-4">
                 {comments?.map(comment => (
-                    <div key={comment.id} className="border-b pb-4">
+                    <div key={comment.id} className="relative border-b pb-4">
                         <div className="flex justify-between items-center mb-2">
-                            <Link to={`/user/${comment.username}`} className="font-medium">{comment.username}</Link>
-
+                            <Link to={`/user/${comment.username}`} className="font-medium">
+                                {comment.username}
+                            </Link>
+                            {user?.username === comment.username && (
+                                <button
+                                    onClick={() => handleDelete(comment.id)}
+                                    className="text-gray-500 hover:text-red-500"
+                                    aria-label="Delete comment"
+                                >
+                                    ×
+                                </button>
+                            )}
                         </div>
                         <p className="text-gray-700">{comment.content}</p>
                     </div>

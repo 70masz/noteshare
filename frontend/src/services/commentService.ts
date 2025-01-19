@@ -10,3 +10,7 @@ export const createComment = async (noteId: number, comment: CommentRequest): Pr
     const { data } = await api.post<CommentResponse>(`/notes/${noteId}/comments`, comment);
     return data;
 };
+
+export const deleteComment = async (noteId: number, commentId: number): Promise<void> => {
+    await api.delete(`/notes/${noteId}/comments/${commentId}`);
+};

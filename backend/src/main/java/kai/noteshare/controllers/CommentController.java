@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import kai.noteshare.dto.CommentRequest;
 import kai.noteshare.dto.CommentResponse;
 import kai.noteshare.entities.Comment;
+import kai.noteshare.entities.User;
 import kai.noteshare.services.CommentService;
 import kai.noteshare.services.UserService;
 
@@ -23,6 +24,16 @@ public class CommentController {
     public CommentController(CommentService commentService, UserService userService) {
         this.commentService = commentService;
         this.userService = userService;
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long noteId,
+            @PathVariable Long commentId,
+            Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        commentService.deleteComment(commentId, user);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
