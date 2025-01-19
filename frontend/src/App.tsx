@@ -8,6 +8,8 @@ import { HomePage } from './pages/HomePage';
 import { NavBar } from './components/navbar/NavBar';
 import { UserPage } from './pages/UserPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { FolderPage } from './pages/FolderPage';
+import { NotePage } from './pages/NotePage';
 
 function AppContent() {
   const loading = useAuthInit();
@@ -32,10 +34,16 @@ function AppContent() {
           />
           <Route
             path="/"
-            element={user ? <HomePage /> : <Navigate to="/login" />}
+            element={<HomePage />}
           />
           <Route
             path="/user/:username" element={user ? <UserPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/folder/:id" element={user ? <FolderPage /> : <Navigate to="/login" />}
+          />
+          <Route 
+            path="/note/:id" element={user ? <NotePage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

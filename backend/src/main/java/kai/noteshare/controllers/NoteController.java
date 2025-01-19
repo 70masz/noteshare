@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import kai.noteshare.dto.CreateNoteRequest;
 import kai.noteshare.dto.NoteResponse;
+import kai.noteshare.dto.UpdateNotePrivacyRequest;
 import kai.noteshare.dto.UpdateNoteRequest;
 import kai.noteshare.entities.Note;
 import kai.noteshare.entities.User;
@@ -33,6 +34,23 @@ public class NoteController {
     public NoteController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
         this.userService = userService;
+    }
+
+    @PutMapping("/notes/{id}/privacy")
+    public ResponseEntity<Void> updateNotePrivacy(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateNotePrivacyRequest request,
+            Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        noteService.updateNotePrivacy(id, request.getIsPrivate(), user);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/notes/public/latest")
+    public ResponseEntity<List<NoteResponse>> getLatestPublicNotes() {
+        return ResponseEntity.ok(noteService.getLatestPublicNotes().stream()
+            .map(this::toNoteResponse)
+            .collect(Collectors.toList()));
     }
 
     @PostMapping("/notes")
@@ -61,6 +79,13 @@ public class NoteController {
         User user = userService.getUserByUsername(principal.getName());
         noteService.updateNoteContent(id, request.getContent(), user);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/notes/{id}")
+    public ResponseEntity<NoteResponse> getNote(
+            @PathVariable Long id,
+            Principal principal) {
+        Note note = noteService.getNoteOrThrow(id);
+        return ResponseEntity.ok(toNoteResponse(note));
     }
 
     @DeleteMapping("/notes/{id}")
