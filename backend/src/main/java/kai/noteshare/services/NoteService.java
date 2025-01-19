@@ -41,6 +41,13 @@ public class NoteService {
         }
     }
 
+    public void updateNotePrivacy(Long noteId, boolean isPrivate, User currentUser) {
+        Note note = getNoteOrThrow(noteId);
+        checkWriteAccess(note, currentUser);
+        note.setIsPrivate(isPrivate);
+        noteRepository.save(note);
+    }
+
     public List<Note> getLatestPublicNotes() {
         return noteRepository.findByIsPrivateFalseOrderByIdDesc(
             PageRequest.of(0, 10)

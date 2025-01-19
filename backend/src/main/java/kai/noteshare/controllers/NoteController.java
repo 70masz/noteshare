@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import kai.noteshare.dto.CreateNoteRequest;
 import kai.noteshare.dto.NoteResponse;
+import kai.noteshare.dto.UpdateNotePrivacyRequest;
 import kai.noteshare.dto.UpdateNoteRequest;
 import kai.noteshare.entities.Note;
 import kai.noteshare.entities.User;
@@ -33,6 +34,16 @@ public class NoteController {
     public NoteController(NoteService noteService, UserService userService) {
         this.noteService = noteService;
         this.userService = userService;
+    }
+
+    @PutMapping("/notes/{id}/privacy")
+    public ResponseEntity<Void> updateNotePrivacy(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateNotePrivacyRequest request,
+            Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        noteService.updateNotePrivacy(id, request.getIsPrivate(), user);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/notes/public/latest")

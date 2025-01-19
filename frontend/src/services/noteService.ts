@@ -15,6 +15,11 @@ export const updateNoteContent = async (noteId: number, content: string): Promis
     await api.put(`/notes/${noteId}/content`, { content });
 };
 
+export const updateNotePrivacy = async (noteId: number, isPrivate: boolean): Promise<void> => {
+    await api.put(`/notes/${noteId}/privacy`, { isPrivate });
+};
+
+
 export const getLatestPublicNotes = async (): Promise<Note[]> => {
     const { data } = await api.get<Note[]>('/notes/public/latest');
     return data;
