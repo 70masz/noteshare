@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/auth/useAuth';
 import { LoginRequest } from '../types/auth';
 
@@ -57,6 +57,10 @@ export const LoginPage = () => {
             {isLoading ? 'Loading...' : 'Login'}
           </button>
         </form>
+        <div className="text-center mt-4">
+          <span className="text-gray-600">Don't have an account? </span>
+          <Link to="/register" className="text-blue-600 hover:text-blue-800">Register</Link>
+        </div>
       </div>
     </div>
   );
