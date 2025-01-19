@@ -1,6 +1,9 @@
-export interface Comment {
+export interface CommentRequest {
+    content: string;
+}
+
+export interface CommentResponse {
     id: number;
     content: string;
-    noteId: number;
-    userId: number;
+    username: string;
 }
