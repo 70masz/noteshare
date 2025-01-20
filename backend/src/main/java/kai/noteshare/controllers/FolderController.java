@@ -20,7 +20,6 @@ import kai.noteshare.dto.FolderResponse;
 import kai.noteshare.dto.UpdateFolderRequest;
 import kai.noteshare.entities.Folder;
 import kai.noteshare.entities.User;
-import kai.noteshare.exceptions.UnauthorizedAccessException;
 import kai.noteshare.services.FolderService;
 import kai.noteshare.services.UserService;
 
@@ -36,15 +35,8 @@ public class FolderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FolderResponse> getFolder(
-        @PathVariable Long id, Principal principal) {
-            User user = userService.getUserByUsername(principal.getName());
-            Folder folder = folderService.getFolderOrThrow(id);
-            
-            if (!folder.getUser().equals(user)) {
-                throw new UnauthorizedAccessException("No access to this folder");
-            }
-        
+    public ResponseEntity<FolderResponse> getFolder(@PathVariable Long id) {
+        Folder folder = folderService.getFolderOrThrow(id);
         return ResponseEntity.ok(toFolderResponse(folder));
     }
 
