@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kai.noteshare.entities.Comment;
 import kai.noteshare.entities.Note;
 import kai.noteshare.entities.User;
+import kai.noteshare.exceptions.InvalidRequestException;
 import kai.noteshare.exceptions.UnauthorizedAccessException;
 import kai.noteshare.repositories.CommentRepository;
 
@@ -38,6 +39,10 @@ public class CommentService {
     }
 
     public Comment createComment(Long noteId, String content, User user) {
+        if (content == null || content.trim().isEmpty()) {
+            throw new InvalidRequestException("Comment content cannot be empty");
+        }
+
         Note note = noteService.getNoteOrThrow(noteId);
         
         Comment comment = new Comment();
